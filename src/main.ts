@@ -42,7 +42,7 @@ async function bootstrap() {
   );
   app.enableCors({ origin: true });
   const config = new DocumentBuilder()
-    .setTitle('SIRMO API')
+    .setTitle('QMT API')
     .setDescription(
       "Système d'Identification RFID Mobile des conducteurs vehicules(Conducteurs) au Bénin",
     )
