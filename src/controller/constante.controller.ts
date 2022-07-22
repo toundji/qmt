@@ -49,7 +49,7 @@ export class ConstanteController {
    return  this.constanteService.resetOrder();
  }
 
- @Get()
+ @Get("init")
  init():Promise<Constante[]>{
     return  this.constanteService.init();
  }
