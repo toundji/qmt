@@ -19,30 +19,30 @@ export class User extends Audit{
   firstname: string;
 
   @Column({ nullable: false })
-  lastname: string;
+  lastname?: string;
 
   @Column({nullable:true})
-  gender: Genre;
+  gender?: Genre;
 
   @Exclude()
   @Column({ nullable: false })
-  password: string;
+  password?: string;
 
   @Column({nullable:true})
   @Index({ unique: true, where: "email IS NOT NULL" })
-  email: string;
+  email?: string;
 
   @Column({nullable:true})
-  birth_date: Date;
+  birth_date?: Date;
 
   @Column({unique:true, nullable:false})
-  phone: string;
+  phone?: string;
 
   @Column({ nullable: false, unique: true })
   code?: string = uuidv4();
 
   @Column({nullable:true})
-  profile_image: string;
+  profile_image?: string;
 
   @Column("simple-array",{default: [RoleName.AGENT]})
   roles?: RoleName[];

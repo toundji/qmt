@@ -8,7 +8,7 @@ import { User } from './user.entity';
 @Entity("tickets")
 export class Ticket extends Audit {
   static  entityName  = "tickets";
-  
+
   @PrimaryGeneratedColumn()
   id?: number;
 
@@ -30,7 +30,7 @@ export class Ticket extends Audit {
 
   @OneToOne((type) => User, {eager:true})
   @JoinColumn({ name: 'user_id'})
-  user:User;
+  agent:User;
 
   @BeforeInsert()  async hashPassword() {
     this.code = Date.now() + "";

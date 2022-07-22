@@ -21,8 +21,8 @@ import { UserDto } from "src/dto/user.dto";
 import { ChangePasswordDto } from "src/dto/change-password.dto";
 import { ChangeEmailDto } from "src/dto/change-emeail.dto";
 import { JwtService } from "@nestjs/jwt";
-import { LoginDto } from './../dto/login.dto';
 import { LoginRespo } from './../dto/login-respo.dto';
+import { UpdateUserDto } from "src/dto/update-user.dto";
 
 @Injectable()
 export class UserService {
@@ -214,13 +214,27 @@ export class UserService {
 
   }
 
-  update(id: number, updateUserDto: User) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
     
-      return this.userRepository.update(id, updateUserDto).catch((error)=>{
+      await  this.userRepository.update(id, updateUserDto).catch((error)=>{
         console.log(error);
         throw new NotFoundException("L'utilisateur spécifier n'existe pas");      
       });
+
+      return this.findOne(id);
+      
   }
+
+  async delete(id: number) {
+    
+    await  this.userRepository.delete(id).catch((error)=>{
+      console.log(error);
+      throw new NotFoundException("L'utilisateur spécifier n'existe pas");      
+    });
+
+    return this.findOne(id);
+    
+}
 
   async updateAll() {
    const users: User[] = await this.findAll();
@@ -259,6 +273,5 @@ export class UserService {
     user.birth_date = new Date();
     const u: User =  await this.userRepository.save(user);
     return u;
-
   }
 }
