@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Req,
+  UseGuards,
   
 } from '@nestjs/common';
 import {   ApiTags } from '@nestjs/swagger';
@@ -20,6 +21,10 @@ import { LoginRespo } from '../dto/login-respo.dto';
 import { ChangePasswordDto } from 'src/dto/change-password.dto';
 import { ChangeEmailDto } from 'src/dto/change-emeail.dto';
 import { UpdateUserDto } from 'src/dto/update-user.dto';
+import { RoleName } from 'src/enums/role-name';
+import { JwtAuthGuard } from 'src/utils/jwt-auth.guard';
+import { RoleGuard } from 'src/utils/role.guard';
+import { Roles } from 'src/utils/role.decorator';
 
 @ApiTags('Users')
 @Controller('users')
@@ -28,10 +33,11 @@ export class UserController {
     private readonly userservice: UserService,
   ) {}
 
-  @Post()
+    @Post()
+    @UseGuards(RoleGuard)
+   @Roles(RoleName.ADMIN)
    create(@Body() body: UserDto): Promise<User> {
     return this.userservice.create(body);
-    
   }
 
   @Get()
@@ -123,7 +129,8 @@ export class UserController {
     return  this.userservice.delete(id);
   }
 
-    @Get()
+    @Get("init")
+    @Public()
     init():Promise<User>{
        return  this.userservice.initOneAdmin();
     }

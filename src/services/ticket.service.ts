@@ -7,15 +7,20 @@ import { Ticket } from './../entities/ticket.entity';
 import { TicketStatus } from 'src/enums/ticket-status';
 import { ReceiveDto } from 'src/dto/receive-ticket.dto';
 import { UserService } from './user.service';
+import { ConstanteService } from './constante.service';
 
 export class TicketService {
   constructor(
     @InjectRepository(Ticket) private ticketRepository: Repository<Ticket>,
-    private readonly userService:UserService
+    private readonly userService:UserService,
+    private readonly constanteService:ConstanteService
+
   ) {}
 
-  create(): Promise<Ticket>{
-      return this.ticketRepository.save(new Ticket());
+ async create(): Promise<Ticket>{
+      const ticket:Ticket = new Ticket();
+      ticket.order_nber = await this.constanteService.getOrder();
+      return await this.ticketRepository.save(ticket);
   }
   findAll():Promise<Ticket[]>{
     return this.ticketRepository.find();
