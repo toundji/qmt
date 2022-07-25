@@ -16,7 +16,6 @@ import { HttpStatus } from "@nestjs/common";
 import { RoleName } from 'src/enums/role-name';
 import { Genre } from "src/enums/genre";
 import { compare, hash } from "bcrypt";
-import  * as path from 'path';
 import { UserDto } from "src/dto/user.dto";
 import { ChangePasswordDto } from "src/dto/change-password.dto";
 import { ChangeEmailDto } from "src/dto/change-emeail.dto";
@@ -98,7 +97,7 @@ export class UserService {
   }
 
   findAll(): Promise<User[]> {
-    return this.userRepository.find({ relations: ["arrondissement"] });
+    return this.userRepository.find();
   }
 
   findOne(id: number): Promise<User> {
