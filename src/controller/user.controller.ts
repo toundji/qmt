@@ -22,9 +22,10 @@ import { ChangePasswordDto } from 'src/dto/change-password.dto';
 import { ChangeEmailDto } from 'src/dto/change-emeail.dto';
 import { UpdateUserDto } from 'src/dto/update-user.dto';
 import { RoleName } from 'src/enums/role-name';
-import { JwtAuthGuard } from 'src/utils/jwt-auth.guard';
 import { RoleGuard } from 'src/utils/role.guard';
 import { Roles } from 'src/utils/role.decorator';
+import { BadRequestException } from '@nestjs/common';
+import { InternalServerErrorException } from '@nestjs/common';
 
 @ApiTags('Users')
 @Controller('users')
@@ -57,13 +58,19 @@ export class UserController {
   @Get('check-email-existence/:email')
   @Public()
   async checkIfEmailExists(@Param('email') email: string): Promise<any> {
-    return await this.userservice.countByEmail(email);
+    return await this.userservice.countByEmail(email).then(value=>{
+      if(value && value>0) throw new BadRequestException("L'email est déjà pris")
+      return "L'adresse email est bien disponible";
+    })
   }
 
-  @Get('auth/check-phone-existence/:phone')
+  @Get('check-phone-existence/:phone')
   @Public()
   async checkIfPhoneExists(@Param('phone') phone: string): Promise<any> {
-    return await this.userservice.countByPhone(phone);
+    return await this.userservice.countByPhone(phone).then(value=>{
+      if(value && value>0) throw new BadRequestException("Le numéro de téléphone est  déjà pris")
+      return "Le numéro de téléphone  est bien disponible";
+    });
   }
 
   

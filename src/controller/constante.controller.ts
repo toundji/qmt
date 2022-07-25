@@ -5,8 +5,8 @@ import { ConstanteDto } from 'src/dto/constante-search.dto';
 import { Constante } from 'src/entities/constante.entity';
 import { ConstanteService } from 'src/services/constante.service';
 
-@Controller('constantees')
-@ApiTags('constantees')
+@Controller('constantes')
+@ApiTags('constantes')
 export class ConstanteController {
   constructor(private readonly constanteService: ConstanteService) {}
 
