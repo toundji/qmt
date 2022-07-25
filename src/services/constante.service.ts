@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Constante } from '../entities/constante.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -104,8 +104,11 @@ export class ConstanteService {
           value:"1"
         }
       ];
-      constantes = Constante.create(list as  Constante[]);
-      return await this.constanteRepository.save(constantes);
+      constantes = this.constanteRepository.create(list);
+      return await this.constanteRepository.save(constantes).catch(error=>{
+        console.log(error);
+        throw new InternalServerErrorException();
+      });
     }
     return constantes;
   }
