@@ -23,7 +23,7 @@ export class Constante extends Audit {
   @Column({default:true})
   status?:boolean;
 
-  @Column({ nullable: false})
+  @Column({ nullable: true})
   description?: string;
 
 }
