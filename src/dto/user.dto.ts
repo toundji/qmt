@@ -38,7 +38,6 @@ export class UserDto {
     phone: string;
 
     @ApiProperty()
-    @IsEnum({type: RoleName},{each:true})
     @IsOptional()
     roles:RoleName[]
 }
