@@ -70,7 +70,9 @@ export class TicketService {
 
     nevel.agent = agent;
 
-    await this.ticketRepository.update(nevel.id, {receive_date: new Date(), agent: agent });
+    await this.ticketRepository.update(nevel.id, {receive_date: new Date(), agent: agent }).catch((error)=>{
+      console.log(error);
+    });
     console.log( nevel+" : update");
 
     return nevel;
