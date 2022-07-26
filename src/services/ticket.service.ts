@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
-import { Repository } from 'typeorm';
+import { MoreThanOrEqual, Repository } from 'typeorm';
 import { Ticket } from './../entities/ticket.entity';
 import { TicketStatus } from 'src/enums/ticket-status';
 import { ReceiveDto } from 'src/dto/receive-ticket.dto';
@@ -40,6 +40,13 @@ export class TicketService {
   findWaiter():Promise<Ticket[]>{
     return this.ticketRepository.find({where:{status: TicketStatus.WAITING}});
   }
+
+  findCancelOfDay():Promise<Ticket[]>{
+    const now:Date = new Date();
+    const beginDay = new  Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0 );
+    return this.ticketRepository.find({where:{status: TicketStatus.WAITING, created_at: MoreThanOrEqual(beginDay)}});
+  }
+  
 
   async receiveOne( body: ReceiveDto):Promise<Ticket>{
     if (body.old_id) {

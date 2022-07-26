@@ -9,6 +9,7 @@ import { Server } from 'socket.io';
 import { TicketService } from './../services/ticket.service';
 import { Ticket } from './../entities/ticket.entity';
 import { ReceiveDto } from 'src/dto/receive-ticket.dto';
+import { TicketStatus } from 'src/enums/ticket-status';
 
 @WebSocketGateway({
   cors: {
@@ -28,14 +29,10 @@ export class TicketGateway {
   async create() {
     const ticket: Ticket = await this.ticketService.create();
     this.server.emit(`onCreate`, ticket);
-   await this.emitWaiter();
+    this.emitAll();
     return ticket;
   }
 
-  async emitWaiter(){
-    const waiters: Ticket[] = await this.ticketService.findWaiter();
-    this.server.emit(`waiter-list`, waiters);
-  }
 
   @SubscribeMessage('get-waiters')
   findAll(): Promise<Ticket[]> {
@@ -45,7 +42,7 @@ export class TicketGateway {
   @SubscribeMessage('receive-one')
   async findOne(@MessageBody() body: ReceiveDto) {
    const ticket:Ticket = await this.ticketService.receiveOne(body);
-   await this.emitWaiter();
+   this.emitAll();
    return ticket;
 
   }
@@ -58,5 +55,26 @@ export class TicketGateway {
   @SubscribeMessage('remove')
   remove(@MessageBody() id: number) {
     console.log(id);
+  }
+
+  
+  async emitAll(){
+    await this.emitWaiter();
+    await this.emitReceive();
+    await this.emitCancelOfDay();
+  }
+
+  
+  async emitWaiter(){
+    const waiters: Ticket[] = await this.ticketService.findWaiter();
+    this.server.emit(`waiter-list`, waiters);
+  }
+  async emitReceive(){
+    const receivers: Ticket[] = await this.ticketService.findByStatus(TicketStatus.RECEIVE);
+    this.server.emit(`receive-list`, receivers);
+  }
+  async emitCancelOfDay(){
+    const cancels: Ticket[] = await this.ticketService.findCancelOfDay();
+    this.server.emit(`canceled-today`, cancels);
   }
 }
