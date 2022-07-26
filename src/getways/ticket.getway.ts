@@ -14,7 +14,7 @@ import { ReceiveDto } from 'src/dto/receive-ticket.dto';
   cors: {
     origin: '*',
   },
-  namespace: 'passages',
+  namespace: 'tickets',
 })
 export class TicketGateway {
   @WebSocketServer()
@@ -35,7 +35,6 @@ export class TicketGateway {
   async emitWaiter(){
     const waiters: Ticket[] = await this.ticketService.findWaiter();
     this.server.emit(`waiter-list`, waiters);
-
   }
 
   @SubscribeMessage('get-waiters')

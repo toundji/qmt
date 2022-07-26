@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 export enum TicketStatus {
     WAITING = 'WAITING',
-    RCEIVE = 'RCEIVE',
+    RECEIVE = 'RECEIVE',
     FINISH = 'FINISH',
     CANCEL = 'CANCEL',
   }

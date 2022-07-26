@@ -66,6 +66,6 @@ export class TicketService {
   }
 
   findRecivingByAndAgent(agentId:number):Promise<Ticket[]>{
-    return this.ticketRepository.find({where:{status: TicketStatus.RCEIVE, agent: {id: agentId}  }});
+    return this.ticketRepository.find({where:{status: TicketStatus.RECEIVE, agent: {id: agentId}  }});
   }
 }
