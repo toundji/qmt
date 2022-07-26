@@ -34,6 +34,7 @@ export class TicketGateway {
     const ticket: Ticket = await this.ticketService.create();
     this.server.emit(`onCreate`, ticket);
     this.emitAll();
+    this.server.emit(`last-order`, +ticket.order_nber );
     return ticket;
   }
 
@@ -61,8 +62,6 @@ export class TicketGateway {
      return null;
    });
    this.emitAll();
-   this.server.emit(`last-order`, +ticket.order_nber);
-
    return ticket;
   }
 
