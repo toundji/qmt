@@ -4,6 +4,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { ConstanteDto } from 'src/dto/constante-search.dto';
 import { Constante } from 'src/entities/constante.entity';
 import { ConstanteService } from 'src/services/constante.service';
+import { Public } from 'src/utils/public-decore';
 
 @Controller('constantes')
 @ApiTags('constantes')
@@ -30,15 +31,19 @@ export class ConstanteController {
     return  this.constanteService.create(createConstanteDto);
   }
 
+  @Public()
   @Post('search')
    search(@Body() body:ConstanteDto): Promise<Constante[]> {
     return  this.constanteService.search(body);
   }
+
+  @Public()
   @Post('search-first')
    findFirst(@Body() body:ConstanteDto): Promise<Constante> {
     return  this.constanteService.searchFirst(body);
   }
 
+  @Public()
   @Get('order')
    getOrder(): Promise<number> {
     return  this.constanteService.getOrder();
