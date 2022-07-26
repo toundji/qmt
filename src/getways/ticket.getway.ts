@@ -4,12 +4,15 @@ import {
   SubscribeMessage,
   MessageBody,
   WebSocketServer,
+  ConnectedSocket,
+  WsException,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { TicketService } from './../services/ticket.service';
 import { Ticket } from './../entities/ticket.entity';
 import { ReceiveDto } from 'src/dto/receive-ticket.dto';
 import { TicketStatus } from 'src/enums/ticket-status';
+import { BadRequestException } from '@nestjs/common';
 
 @WebSocketGateway({
   cors: {
@@ -41,7 +44,10 @@ export class TicketGateway {
   @SubscribeMessage('receive-one')
   async findOne(@MessageBody() body: ReceiveDto) {
     console.log(body);
-   const ticket:Ticket = await this.ticketService.receiveOne(body);
+   const ticket:Ticket = await this.ticketService.receiveOne(body).catch((error: BadRequestException)=>{
+     throw new WsException(error.message);
+     return null;
+   });
    this.emitAll();
    return ticket;
 

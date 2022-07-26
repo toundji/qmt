@@ -8,6 +8,7 @@ import { TicketStatus } from 'src/enums/ticket-status';
 import { ReceiveDto } from 'src/dto/receive-ticket.dto';
 import { UserService } from './user.service';
 import { ConstanteService } from './constante.service';
+import { BadRequestException } from '@nestjs/common';
 
 export class TicketService {
   constructor(
@@ -72,6 +73,7 @@ export class TicketService {
 
     await this.ticketRepository.update(nevel.id, {receive_date: new Date(), agent: agent }).catch((error)=>{
       console.log(error);
+      throw new BadRequestException("Une erreur s'est produit");
     });
     console.log( nevel+" : update");
 
