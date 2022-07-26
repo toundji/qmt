@@ -24,6 +24,11 @@ export class UserDto {
     @IsNotEmpty()
     password: string;
 
+    @ApiProperty({required:true})
+    @IsString()
+    @IsNotEmpty()
+    office_name
+
     @ApiProperty()
     @IsEmail()
     @IsOptional()

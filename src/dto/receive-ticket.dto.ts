@@ -14,7 +14,6 @@ export class ReceiveDto {
   @IsOptional()
   old_id: number;
 
-  @IsString()
   @IsNumber()
   @IsPositive()
   @IsOptional()

@@ -1,11 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { BeforeInsert, Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuidv4 } from 'uuid';
 import { hash } from 'bcrypt';
 import { Audit } from "./audit";
 import { Genre } from 'src/enums/genre';
 import { Exclude } from 'class-transformer';
 import { RoleName } from 'src/enums/role-name';
+import { Office } from "./office.entity";
 
 
 @Entity("users")
@@ -20,6 +21,9 @@ export class User extends Audit{
 
   @Column({ nullable: false })
   lastname?: string;
+
+  @Column({ nullable: true })
+  office_name?: string;
 
   @Column({nullable:true})
   gender?: Genre;
@@ -46,6 +50,10 @@ export class User extends Audit{
 
   @Column("simple-array",{default: [RoleName.AGENT]})
   roles?: RoleName[];
+
+  @OneToOne((type) => Office, {eager:true})
+  @JoinColumn({ name: 'office_id'})
+  office:Office;
 
   @BeforeInsert()  async hashPassword() {
     this.email = this.email?.toLowerCase()?.trim();

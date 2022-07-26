@@ -3,6 +3,7 @@ import { Exclude } from 'class-transformer';
 import { TicketStatus } from 'src/enums/ticket-status';
 import { BeforeInsert, Column,  Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Audit } from './audit';
+import { Office } from './office.entity';
 import { User } from './user.entity';
 
 @Entity("tickets")
@@ -31,6 +32,10 @@ export class Ticket extends Audit {
   @OneToOne((type) => User, {eager:true})
   @JoinColumn({ name: 'user_id'})
   agent:User;
+
+  @OneToOne((type) => Office, {eager:true})
+  @JoinColumn({ name: 'office_id'})
+  office:Office;
 
   @BeforeInsert()  async hashPassword() {
     this.code = Date.now() + "";

@@ -109,6 +109,15 @@ export class UserService {
       });
   }
 
+  findOneByCode(code: string): Promise<User> {
+    return this.userRepository.findOneOrFail({where:{code:code}}).catch((error)=>{
+      console.log(error);
+    throw new NotFoundException(
+      "L'utilisateur avec le code " + code + " est introuvable",
+    );
+    });
+}
+
   findOneByPseudo(pseudo: string): Promise<any> {
     Logger.debug(pseudo);
     return this.userRepository.findOneOrFail({
@@ -123,7 +132,7 @@ export class UserService {
       }
     )
   }
-  countByMailOrPHone(mailOrPhone:string): Promise<number>{
+  countByMailOrPhone(mailOrPhone:string): Promise<number>{
     return this.userRepository.count({where: [{email: mailOrPhone}, {phone: mailOrPhone}]}).catch(
       (error)=>{
         throw new InternalServerErrorException("Erreur de traitement: "+error.message);
@@ -262,7 +271,6 @@ export class UserService {
     user = new User();
   
     user.roles = Object.values(RoleName);
-
     user.firstname = "Ola";
     user.lastname = "BABA";
     user.gender = Genre.MASCULIN;
@@ -271,6 +279,7 @@ export class UserService {
     user.phone = "+22994851785";
     user.birth_date = new Date();
     const u: User =  await this.userRepository.save(user);
+    
     return u;
   }
 }

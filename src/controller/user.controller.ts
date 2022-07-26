@@ -48,10 +48,8 @@ export class UserController {
   }
 
   @Post('login')
-    @Public()
-   signin(
-    @Body() body: LoginDto,
-  ): Promise<LoginRespo> {
+  @Public()
+   signin(@Body() body: LoginDto): Promise<LoginRespo> {
     return this.userservice.login(body);
   }
 
