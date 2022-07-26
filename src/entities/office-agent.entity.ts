@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { OfficeStatus } from 'src/enums/office-status';
-import { Column,  Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column,  Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Audit } from './audit';
 import { Office } from './office.entity';
 import { User } from './user.entity';
@@ -15,11 +15,11 @@ export class AgentOffice extends Audit {
   @Column({nullable:true})
   finish_date: Date;
 
-  @OneToOne((type) => User, { eager:true })
+  @ManyToOne((type) => User, { eager:true })
   @JoinColumn({ name: 'user_id'})
   agent:User;
 
-  @OneToOne((type) => Office, {eager:true})
+  @ManyToOne((type) => Office, {eager:true})
   @JoinColumn({ name: 'office_id'})
   office:Office;
 

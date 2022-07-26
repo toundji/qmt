@@ -5,6 +5,7 @@ import { BeforeInsert, Column,  Entity, JoinColumn, OneToOne, PrimaryGeneratedCo
 import { Audit } from './audit';
 import { Office } from './office.entity';
 import { User } from './user.entity';
+import { ManyToOne } from 'typeorm';
 
 @Entity("tickets")
 export class Ticket extends Audit {
@@ -29,11 +30,11 @@ export class Ticket extends Audit {
   @Column({ nullable: false, unique: true })
   code?: string;
 
-  @OneToOne((type) => User, {eager:true})
+  @ManyToOne((type) => User, {eager:true})
   @JoinColumn({ name: 'user_id'})
   agent:User;
 
-  @OneToOne((type) => Office, {eager:true})
+  @ManyToOne((type) => Office, {eager:true})
   @JoinColumn({ name: 'office_id'})
   office:Office;
 

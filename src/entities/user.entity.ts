@@ -51,7 +51,7 @@ export class User extends Audit{
   @Column("simple-array",{default: [RoleName.AGENT]})
   roles?: RoleName[];
 
-  @OneToOne((type) => Office, {eager:true})
+  @ManyToOne((type) => Office, {eager:true})
   @JoinColumn({ name: 'office_id'})
   office:Office;
 
