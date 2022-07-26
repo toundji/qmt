@@ -9,7 +9,7 @@ import { TicketService } from './../services/ticket.service';
 
 
 @ApiTags('Tikects')
-@Controller('tikects')
+@Controller('tickets')
 export class TikectController {
   constructor(
     private readonly ticketService: TicketService,
