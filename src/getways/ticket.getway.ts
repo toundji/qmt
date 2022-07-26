@@ -20,7 +20,6 @@ import { TicketStatus } from 'src/enums/ticket-status';
 export class TicketGateway {
   @WebSocketServer()
   server: Server;
-
   constructor(
     private readonly ticketService: TicketService
   ) {}
@@ -41,6 +40,7 @@ export class TicketGateway {
 
   @SubscribeMessage('receive-one')
   async findOne(@MessageBody() body: ReceiveDto) {
+    console.log(body);
    const ticket:Ticket = await this.ticketService.receiveOne(body);
    this.emitAll();
    return ticket;

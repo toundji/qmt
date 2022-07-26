@@ -50,18 +50,28 @@ export class TicketService {
 
   async receiveOne( body: ReceiveDto):Promise<Ticket>{
     if (body.old_id) {
+      console.log(body.old_id+" old id is not null");
      const  old:Ticket= await this.findOne(body.old_id);
-     if(old.status != TicketStatus.FINISH){ 
+     if(old.status != TicketStatus.FINISH){
+      console.log( old.status+" : old stasus is n");
+
         old.finish_date = new Date();
         old.status = TicketStatus.FINISH;
         await this.ticketRepository.save(old);
+        console.log( old+" : is iupdaten");
       }
     }
     const nevel= await this.findOne(body.id);
+    console.log( nevel+" : nevel");
+
     nevel.receive_date = new Date();
     const agent = await this.userService.findOne(body.agent_id);
+    console.log( agent+" : agent");
+
     nevel.agent = agent;
+
     await this.ticketRepository.save(nevel);
+    console.log( nevel+" : update");
 
     return nevel;
   }
