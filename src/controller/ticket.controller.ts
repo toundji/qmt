@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 
-import { Controller, Get, Param } from "@nestjs/common";
+import { Body, Controller, Get, Param, Put } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
+import { TicketDto } from "src/dto/ticket.dto";
 import { Ticket } from "src/entities/ticket.entity";
 import { TicketStatus } from "src/enums/ticket-status";
 import { TicketService } from './../services/ticket.service';
@@ -23,6 +24,11 @@ export class TikectController {
   @Get()
    getTickets(): Promise<Ticket[]> {
     return this.ticketService.findAll();
+  }
+
+  @Put()
+   receiveTicket(@Body() body: TicketDto): Promise<Ticket> {
+    return this.ticketService.receiveOne(body);
   }
 
   @Get(":id")
