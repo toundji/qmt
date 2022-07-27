@@ -15,6 +15,11 @@ export class TikectController {
     private readonly ticketService: TicketService,
   ) {}
 
+  @Get("create")
+   createOne(): Promise<Ticket> {
+    return  this.ticketService.create();
+  }
+
   @Get()
    getTickets(): Promise<Ticket[]> {
     return this.ticketService.findAll();
