@@ -54,6 +54,11 @@ export class TicketGateway {
     return this.ticketService.findWaiter();
   }
 
+  @SubscribeMessage('waiter-list')
+  waiterList(): Promise<Ticket[]> {
+    return this.ticketService.findWaiter();
+  }
+
   @SubscribeMessage('receive-one')
   async findOne(@MessageBody() body: ReceiveDto) {
     console.log(body);
