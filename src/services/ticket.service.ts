@@ -64,8 +64,9 @@ export class TicketService {
     const agent = await this.userService.findOne(body.agent_id);
 
     nevel.agent = agent;
+    nevel.status = TicketStatus.RECEIVE;
 
-    await this.ticketRepository.update(nevel.id, {receive_date: new Date(), agent: agent }).catch((error)=>{
+    await this.ticketRepository.save(nevel).catch((error)=>{
       console.log(error);
       throw new BadRequestException("Une erreur s'est produit");
     });
