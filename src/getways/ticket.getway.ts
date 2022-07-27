@@ -54,9 +54,10 @@ export class TicketGateway {
     return this.ticketService.findWaiter();
   }
 
-  @SubscribeMessage('waiter-list')
+  @SubscribeMessage('emit-list')
   waiterList(): Promise<Ticket[]> {
-    return this.ticketService.findWaiter();
+    this.emitAll();
+    return null;
   }
 
   @SubscribeMessage('receive-one')
