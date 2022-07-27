@@ -31,6 +31,8 @@ export class TikectController {
     return this.ticketService.receiveOne(body);
   }
 
+  
+
   @Get(":id")
    getOneTicket(@Param('id') id:number): Promise<Ticket> {
     return  this.ticketService.findOne(id);
