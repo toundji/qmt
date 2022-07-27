@@ -53,7 +53,7 @@ export class User extends Audit{
 
   @ManyToOne((type) => Office, {eager:true})
   @JoinColumn({ name: 'office_id'})
-  office:string;
+  office:Office;
 
   @BeforeInsert()  async hashPassword() {
     this.email = this.email?.toLowerCase()?.trim();
