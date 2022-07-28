@@ -5,6 +5,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { TicketDto } from "src/dto/ticket.dto";
 import { Ticket } from "src/entities/ticket.entity";
 import { TicketStatus } from "src/enums/ticket-status";
+import { Public } from "src/utils/public-decore";
 import { TicketService } from './../services/ticket.service';
 
 
@@ -21,6 +22,7 @@ export class TikectController {
     return  this.ticketService.create();
   }
 
+  @Public()
   @Get()
    getTickets(): Promise<Ticket[]> {
     return this.ticketService.findAll();
