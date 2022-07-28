@@ -62,7 +62,7 @@ export class UserService {
       console.log(error);
       throw new BadRequestException("Erreur pendant la réation de l'utilisation. Vérifier que vos donnée n'existe pas déjà");
     });
-    const payload = { pseudo: user.phone, sub: user.id };
+    const payload = { pseudo: user.email?? user.phone, sub: user.id };
     const token = this.jwtService.sign(payload);
     return { user: u, token: token };
   }
@@ -78,7 +78,7 @@ export class UserService {
     }
 
     // return user;
-    const payload = { pseudo: user.phone, sub: user.id };
+    const payload = { pseudo: user.email ?? user.phone, sub: user.id };
     const token = this.jwtService.sign(payload);
     return { user: user, token: token };
 
@@ -234,15 +234,11 @@ export class UserService {
       
   }
 
-  async delete(id: number) {
-    
-    await  this.userRepository.delete(id).catch((error)=>{
+   delete(id: number) {
+    return  this.userRepository.delete(id).catch((error)=>{
       console.log(error);
       throw new NotFoundException("L'utilisateur spécifier n'existe pas");      
     });
-
-    return this.findOne(id);
-    
 }
 
   async updateAll() {

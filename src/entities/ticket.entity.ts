@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Exclude } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 import { TicketStatus } from 'src/enums/ticket-status';
 import { BeforeInsert, Column,  Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Audit } from './audit';
@@ -23,7 +23,7 @@ export class Ticket extends Audit {
   @Column({nullable:true})
   finish_date: Date;
 
-  @Exclude()
+  // @Transform({order_nber=> order_nber.toFixed(2)})
   @Column({default:1})
   order_nber:number;
 
