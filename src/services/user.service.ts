@@ -37,15 +37,15 @@ export class UserService {
       user[cle] = body[cle];
     });
     console.log(body);
+    console.log(user);
     user.roles = body.roles;
     user.roles ??= [];
-    user.office_name = body.office_name;
     if(user.roles.indexOf(RoleName.AGENT) == -1){
       user.roles.push(RoleName.AGENT);
     }
     const u: User = await this.userRepository.save(user).catch((error)=>{
       console.log(error);
-      throw {body: error, error: error};
+      throw new BadRequestException("Erreur pendant la réation de l'utilisation. Vérifier que vos donnée n'existe pas déjà");
     });
 
       return u;

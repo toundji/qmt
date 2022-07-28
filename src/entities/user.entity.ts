@@ -22,7 +22,7 @@ export class User extends Audit{
   @Column({ nullable: true })
   lastname?: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, name:'office_name' })
   office_name!: string;
 
   @Column({nullable:true})
@@ -51,9 +51,9 @@ export class User extends Audit{
   @Column("simple-array",{default: [RoleName.AGENT]})
   roles?: RoleName[];
 
-  @ManyToOne((type) => Office, {eager:true})
-  @JoinColumn({ name: 'office_id'})
-  office:Office;
+  // @ManyToOne((type) => Office, {eager:true})
+  // @JoinColumn({ name: 'office_id'})
+  // office:Office;
 
   @BeforeInsert()  async hashPassword() {
     this.email = this.email?.toLowerCase()?.trim();

@@ -32,15 +32,15 @@ export class AgentOfficeService {
     }else if(body.agent_code){
         agent = await this.userService.findOneByCode(body.agent_code)
     }
-    if(agent.office){
-        throw new BadRequestException("Agent est en garde actuellement. Vous pouvez le descendre d'abord");
-    }
+    // if(agent.office){
+    //     throw new BadRequestException("Agent est en garde actuellement. Vous pouvez le descendre d'abord");
+    // }
     const office:Office = await this.officeService.findOne(body.office_id);
     if(office.status == OfficeStatus.OUVERT){
         throw new BadRequestException("Un agent y est actuellement. Veillez le descendre");
     }
     office.status = OfficeStatus.OUVERT;
-    agent.office = office;
+    // agent.office = office;
     await Office.save(office);
     await User.save(agent);
 
@@ -59,9 +59,9 @@ export class AgentOfficeService {
     if(agentOffice.finish_date){
         throw new BadRequestException("L'agent n'est plus en garde actuellement. ");
     }
-    agentOffice.agent.office.status = OfficeStatus.FERMER;
-    await Office.save(agentOffice.agent.office);
-    agentOffice.agent.office =null;
+    // agentOffice.agent.office.status = OfficeStatus.FERMER;
+    // await Office.save(agentOffice.agent.office);
+    // agentOffice.agent.office =null;
     await User.save(agentOffice.agent);
     return agentOffice;
  }
