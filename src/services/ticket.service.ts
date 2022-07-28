@@ -38,6 +38,8 @@ export class TicketService {
     return this.ticketRepository.find({where:{status: status }});
   }
 
+ 
+
   findWaiter():Promise<Ticket[]>{
     return this.ticketRepository.find({where:{status: TicketStatus.WAITING}});
   }
@@ -46,6 +48,12 @@ export class TicketService {
     const now:Date = new Date();
     const beginDay = new  Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0 );
     return this.ticketRepository.find({where:{status: TicketStatus.WAITING,  created_at: MoreThanOrEqual(beginDay)}});
+  }
+
+  findByStatusOfDay(status: TicketStatus):Promise<Ticket[]>{
+    const now:Date = new Date();
+    const beginDay = new  Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0 );
+    return this.ticketRepository.find({where:{status: status ,   created_at: MoreThanOrEqual(beginDay)}});
   }
 
   findCancelOfDay():Promise<Ticket[]>{
@@ -79,6 +87,32 @@ export class TicketService {
 
     return nevel;
   }
+
+
+  async finishOne( body: ReceiveDto):Promise<Ticket>{
+    
+     const  old:Ticket= await this.findOne(body.id);
+        old.finish_date = new Date();
+        old.status = TicketStatus.FINISH;
+        await this.ticketRepository.save(old);
+    return old;
+  }
+
+  async rejetOne( body: ReceiveDto):Promise<Ticket>{
+    const  old:Ticket= await this.findOne(body.id);
+       old.finish_date =null;
+       old.status = TicketStatus.WAITING;
+       await this.ticketRepository.save(old);
+   return old;
+ }
+
+ async cancelOne( body: ReceiveDto):Promise<Ticket>{
+  const  old:Ticket= await this.findOne(body.id);
+     old.finish_date =null;
+     old.status = TicketStatus.CANCEL;
+     await this.ticketRepository.save(old);
+ return old;
+}
 
   async updateStatus(id:number, status: TicketStatus):Promise<Ticket>{
     const ticket: Ticket = await this.findOne(id);

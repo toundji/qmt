@@ -33,6 +33,21 @@ export class TikectController {
     return this.ticketService.receiveOne(body);
   }
 
+  @Put("finish-one")
+  finishTicket(@Body() body: TicketDto): Promise<Ticket> {
+   return this.ticketService.receiveOne(body);
+ }
+
+ @Put("cancel-one")
+ cancelTicketTicket(@Body() body: TicketDto): Promise<Ticket> {
+  return this.ticketService.cancelOne(body);
+  }
+
+  @Put("rejet-one")
+  rejetTicketTicket(@Body() body: TicketDto): Promise<Ticket> {
+    return this.ticketService.rejetOne(body);
+  }
+
   @Get(":id")
    getOneTicket(@Param('id') id:number): Promise<Ticket> {
     return  this.ticketService.findOne(id);
