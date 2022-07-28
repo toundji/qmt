@@ -38,7 +38,7 @@ export class User extends Audit{
   @Column({nullable:true})
   birth_date?: Date;
 
-  @Column({unique:true})
+  @Column({nullable:true})
   @Index({ unique: true, where: "phone IS NOT NULL" })
   phone?: string;
 
