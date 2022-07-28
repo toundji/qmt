@@ -19,6 +19,7 @@ export class UserDto {
 
     @ApiProperty({required:true, default:Genre.MASCULIN})
     @IsEnum(Genre)
+    @IsOptional()
     gender: Genre;
 
     @ApiProperty({required:true})
