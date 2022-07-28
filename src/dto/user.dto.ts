@@ -26,7 +26,8 @@ export class UserDto {
 
     @ApiProperty({required:true})
     @IsString()
-    office_name
+    @IsOptional()
+    office_name:string;
 
     @ApiProperty()
     @IsEmail()
