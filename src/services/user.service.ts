@@ -37,7 +37,7 @@ export class UserService {
     });
     user.roles = body.roles;
     user.roles ??= [];
-    user.office_name = body.office_name;
+    // user.office_name = body.office_name;
     if(user.roles.indexOf(RoleName.USER) == -1){
       user.roles.push(RoleName.USER);
     }
