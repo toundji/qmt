@@ -90,7 +90,7 @@ export class TicketGateway {
 
   
   async emitWaiter(){
-    const waiters: Ticket[] = await this.ticketService.findWaiter();
+    const waiters: Ticket[] = await this.ticketService.findWaiterOfDays();
     this.server.emit(`waiter-list`, waiters);
   }
   async emitReceive(){

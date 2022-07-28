@@ -42,6 +42,12 @@ export class TicketService {
     return this.ticketRepository.find({where:{status: TicketStatus.WAITING}});
   }
 
+  findWaiterOfDays():Promise<Ticket[]>{
+    const now:Date = new Date();
+    const beginDay = new  Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0 );
+    return this.ticketRepository.find({where:{status: TicketStatus.WAITING,  created_at: MoreThanOrEqual(beginDay)}});
+  }
+
   findCancelOfDay():Promise<Ticket[]>{
     const now:Date = new Date();
     const beginDay = new  Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0 );
