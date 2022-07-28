@@ -8,11 +8,13 @@ export class UserDto {
     @ApiProperty({required:true})
     @IsString()
     @IsNotEmpty()
+    @IsOptional()
     firstname: string;
 
     @ApiProperty({required:true})
     @IsString()
     @IsNotEmpty()
+    @IsOptional()
     lastname: string;
 
     @ApiProperty({required:true, default:Genre.MASCULIN})
@@ -26,20 +28,21 @@ export class UserDto {
 
     @ApiProperty({required:true})
     @IsString()
-    @IsOptional()
+    @IsNotEmpty()
     office_name:string;
 
     @ApiProperty()
     @IsEmail()
-    @IsOptional()
     email?: string;
 
     @ApiProperty()
     @IsString()
+    @IsOptional()
     birth_date: Date;
 
     @ApiProperty({required:true})
     @IsPhoneNumber("BJ")
+    @IsOptional()
     phone: string;
 
     @ApiProperty()

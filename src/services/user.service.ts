@@ -36,11 +36,12 @@ export class UserService {
     Object.keys(body).forEach((cle) => {
       user[cle] = body[cle];
     });
+    console.log(body);
     user.roles = body.roles;
     user.roles ??= [];
-    // user.office_name = body.office_name;
-    if(user.roles.indexOf(RoleName.USER) == -1){
-      user.roles.push(RoleName.USER);
+    user.office_name = body.office_name;
+    if(user.roles.indexOf(RoleName.AGENT) == -1){
+      user.roles.push(RoleName.AGENT);
     }
     const u: User = await this.userRepository.save(user).catch((error)=>{
       console.log(error);
@@ -49,8 +50,6 @@ export class UserService {
 
       return u;
   }
-
- 
 
   async register(body: UserDto): Promise<LoginRespo> {
     const user: User = new User();

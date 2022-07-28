@@ -16,14 +16,14 @@ export class User extends Audit{
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   firstname: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   lastname?: string;
 
   @Column({ nullable: true })
-  office_name?: string;
+  office_name!: string;
 
   @Column({nullable:true})
   gender?: Genre;
@@ -32,14 +32,14 @@ export class User extends Audit{
   @Column({ nullable: false })
   password?: string;
 
-  @Column({nullable:true})
-  @Index({ unique: true, where: "email IS NOT NULL" })
+  @Column({nullable:true, unique: true})
   email?: string;
 
   @Column({nullable:true})
   birth_date?: Date;
 
-  @Column({unique:true, nullable:false})
+  @Column({unique:true})
+  @Index({ unique: true, where: "phone IS NOT NULL" })
   phone?: string;
 
   @Column({ nullable: false, unique: true })

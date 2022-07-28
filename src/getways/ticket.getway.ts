@@ -88,7 +88,6 @@ export class TicketGateway {
     await this.emitCancelOfDay();
   }
 
-  
   async emitWaiter(){
     const waiters: Ticket[] = await this.ticketService.findWaiterOfDays();
     this.server.emit(`waiter-list`, waiters);
