@@ -26,7 +26,6 @@ export class UserDto {
 
     @ApiProperty({required:true})
     @IsString()
-    @IsNotEmpty()
     office_name
 
     @ApiProperty()
