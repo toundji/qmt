@@ -105,7 +105,6 @@ export class TicketGateway {
     await this.emitReceive();
     await this.emitCancel();
     await this.emitFinish();
-
   }
 
   async emitWaiter(){

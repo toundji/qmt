@@ -6,7 +6,6 @@ import { Audit } from "./audit";
 import { Genre } from 'src/enums/genre';
 import { Exclude } from 'class-transformer';
 import { RoleName } from 'src/enums/role-name';
-import { Office } from "./office.entity";
 
 
 @Entity("users")
@@ -49,7 +48,12 @@ export class User extends Audit{
   profile_image?: string;
 
   @Column("simple-array",{default: [RoleName.AGENT]})
-  roles?: RoleName[];
+    // @Column({
+    //   type: "enum",
+    //   enum: RoleName,
+    //   default: [RoleName.AGENT]
+    // })
+   roles?: RoleName[];
 
   // @ManyToOne((type) => Office, {eager:true})
   // @JoinColumn({ name: 'office_id'})

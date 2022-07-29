@@ -235,11 +235,8 @@ export class UserService {
   }
 
    delete(id: number) {
-    return  this.userRepository.delete(id).catch((error)=>{
-      console.log(error);
-      throw new NotFoundException("L'utilisateur spécifier n'existe pas");      
-    });
-}
+    return  this.userRepository.delete(id);
+  }
 
   async updateAll() {
    const users: User[] = await this.findAll();
@@ -267,12 +264,12 @@ export class UserService {
     if (user) return;
     user = new User();
   
-    user.roles = Object.values(RoleName);
-    user.firstname = "Ola";
-    user.lastname = "BABA";
+    user.roles = [RoleName.ADMIN];
+    user.firstname = "Atlantic";
+    user.lastname = "BANK";
     user.gender = Genre.MASCULIN;
-    user.email = "Baba@gmail.com";
-    user.password = "Baba@1234";
+    user.email = "atlantic@bank.com";
+    user.password = "Atlantic@1234";
     user.phone = "+22994851785";
     user.birth_date = new Date();
     const u: User =  await this.userRepository.save(user);
