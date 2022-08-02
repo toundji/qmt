@@ -7,9 +7,11 @@ import { AppModule } from './app.module';
 import { AppValidationError } from './utils/api-validation-error';
 import { JwtAuthGuard } from './utils/jwt-auth.guard';
 import * as bodyParser from 'body-parser';
+import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -62,6 +64,7 @@ async function bootstrap() {
     .build();
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+  app.useStaticAssets(join(__dirname, '..', 'public'));
   const document = SwaggerModule.createDocument(app, config);
   const reflector = app.get(Reflector);
   app.useGlobalGuards(new JwtAuthGuard(reflector));

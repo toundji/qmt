@@ -9,70 +9,114 @@ import { ReceiveDto } from 'src/dto/receive-ticket.dto';
 import { UserService } from './user.service';
 import { ConstanteService } from './constante.service';
 import { BadRequestException } from '@nestjs/common';
+import * as fs from 'fs';
+import * as path from 'path';
+import { printDirect } from 'printer';
+import handlebars from 'handlebars';
+import * as puppeteer from 'puppeteer';
 
 export class TicketService {
   constructor(
     @InjectRepository(Ticket) private ticketRepository: Repository<Ticket>,
-    private readonly userService:UserService,
-    private readonly constanteService:ConstanteService
-
-  ) {}
-
- async create(): Promise<Ticket>{
-      const ticket:Ticket = new Ticket();
-      ticket.order_nber = await this.constanteService.getOrder();
-      return await this.ticketRepository.save(ticket);
+    private readonly userService: UserService,
+    private readonly constanteService: ConstanteService,
+  ) {
+    this.templateHtml = fs.readFileSync('public/files/ticket.html', 'utf8');
+    this.compiledTemplate = handlebars.compile(this.templateHtml);
   }
-  findAll():Promise<Ticket[]>{
+
+  private templateHtml: any;
+  private compiledTemplate: any;
+
+  async create(): Promise<Ticket> {
+    const ticket: Ticket = new Ticket();
+    ticket.order_nber = await this.constanteService.getOrder();
+    const savedTicket = await this.ticketRepository.save(ticket);
+    this.printFile(savedTicket.order_nber);
+    return savedTicket;
+  }
+  findAll(): Promise<Ticket[]> {
     return this.ticketRepository.find();
   }
-  findOne(id:number):Promise<Ticket>{
-    return this.ticketRepository.findOneOrFail({where:{id:id}});
+  findOne(id: number): Promise<Ticket> {
+    return this.ticketRepository.findOneOrFail({ where: { id: id } });
   }
 
-  findByAgent(agentId:number):Promise<Ticket[]>{
-    return this.ticketRepository.find({where:{agent: {id: agentId} }});
+  findByAgent(agentId: number): Promise<Ticket[]> {
+    return this.ticketRepository.find({ where: { agent: { id: agentId } } });
   }
 
-  findByStatus(status: TicketStatus):Promise<Ticket[]>{
-    return this.ticketRepository.find({where:{status: status }});
+  findByStatus(status: TicketStatus): Promise<Ticket[]> {
+    return this.ticketRepository.find({ where: { status: status } });
   }
 
- 
-
-  findWaiter():Promise<Ticket[]>{
-    return this.ticketRepository.find({where:{status: TicketStatus.WAITING}});
+  findWaiter(): Promise<Ticket[]> {
+    return this.ticketRepository.find({
+      where: { status: TicketStatus.WAITING },
+    });
   }
 
-  findWaiterOfDays():Promise<Ticket[]>{
-    const now:Date = new Date();
-    const beginDay = new  Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0 );
-    return this.ticketRepository.find({where:{status: TicketStatus.WAITING,  created_at: MoreThanOrEqual(beginDay)}});
+  findWaiterOfDays(): Promise<Ticket[]> {
+    const now: Date = new Date();
+    const beginDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      0,
+      0,
+      0,
+    );
+    return this.ticketRepository.find({
+      where: {
+        status: TicketStatus.WAITING,
+        created_at: MoreThanOrEqual(beginDay),
+      },
+    });
   }
 
-  findByStatusOfDay(status: TicketStatus):Promise<Ticket[]>{
-    const now:Date = new Date();
-    const beginDay = new  Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0 );
-    return this.ticketRepository.find({where:{status: status ,   created_at: MoreThanOrEqual(beginDay)}});
+  findByStatusOfDay(status: TicketStatus): Promise<Ticket[]> {
+    const now: Date = new Date();
+    const beginDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      0,
+      0,
+      0,
+    );
+    return this.ticketRepository.find({
+      where: { status: status, created_at: MoreThanOrEqual(beginDay) },
+    });
   }
 
-  findCancelOfDay():Promise<Ticket[]>{
-    const now:Date = new Date();
-    const beginDay = new  Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0 );
-    return this.ticketRepository.find({where:{status: TicketStatus.WAITING, created_at: MoreThanOrEqual(beginDay)}});
+  findCancelOfDay(): Promise<Ticket[]> {
+    const now: Date = new Date();
+    const beginDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      0,
+      0,
+      0,
+    );
+    return this.ticketRepository.find({
+      where: {
+        status: TicketStatus.WAITING,
+        created_at: MoreThanOrEqual(beginDay),
+      },
+    });
   }
-  
 
-  async receiveOne( body: ReceiveDto):Promise<Ticket>{
+  async receiveOne(body: ReceiveDto): Promise<Ticket> {
     if (body.old_id) {
-     const  old:Ticket= await this.findOne(body.old_id);
-     if(old.status != TicketStatus.FINISH){
+      const old: Ticket = await this.findOne(body.old_id);
+      if (old.status != TicketStatus.FINISH) {
         old.finish_date = new Date();
         old.status = TicketStatus.FINISH;
         await this.ticketRepository.save(old);
       }
     }
-    const nevel= await this.findOne(body.id);
+    const nevel = await this.findOne(body.id);
 
     nevel.receive_date = new Date();
     const agent = await this.userService.findOne(body.agent_id);
@@ -80,7 +124,7 @@ export class TicketService {
     nevel.agent = agent;
     nevel.status = TicketStatus.RECEIVE;
 
-    await this.ticketRepository.save(nevel).catch((error)=>{
+    await this.ticketRepository.save(nevel).catch((error) => {
       console.log(error);
       throw new BadRequestException("Une erreur s'est produit");
     });
@@ -88,39 +132,100 @@ export class TicketService {
     return nevel;
   }
 
-
-  async finishOne( body: ReceiveDto):Promise<Ticket>{
-    
-     const  old:Ticket= await this.findOne(body.id);
-        old.finish_date = new Date();
-        old.status = TicketStatus.FINISH;
-        await this.ticketRepository.save(old);
+  async finishOne(body: ReceiveDto): Promise<Ticket> {
+    const old: Ticket = await this.findOne(body.id);
+    old.finish_date = new Date();
+    old.status = TicketStatus.FINISH;
+    await this.ticketRepository.save(old);
     return old;
   }
 
-  async rejetOne( body: ReceiveDto):Promise<Ticket>{
-    const  old:Ticket= await this.findOne(body.id);
-       old.finish_date =null;
-       old.status = TicketStatus.WAITING;
-       await this.ticketRepository.save(old);
-   return old;
- }
+  async rejetOne(body: ReceiveDto): Promise<Ticket> {
+    const old: Ticket = await this.findOne(body.id);
+    old.finish_date = null;
+    old.status = TicketStatus.WAITING;
+    await this.ticketRepository.save(old);
+    return old;
+  }
 
- async cancelOne( body: ReceiveDto):Promise<Ticket>{
-  const  old:Ticket= await this.findOne(body.id);
-     old.finish_date =null;
-     old.status = TicketStatus.CANCEL;
-     await this.ticketRepository.save(old);
- return old;
-}
+  async cancelOne(body: ReceiveDto): Promise<Ticket> {
+    const old: Ticket = await this.findOne(body.id);
+    old.finish_date = null;
+    old.status = TicketStatus.CANCEL;
+    await this.ticketRepository.save(old);
+    return old;
+  }
 
-  async updateStatus(id:number, status: TicketStatus):Promise<Ticket>{
+  async updateStatus(id: number, status: TicketStatus): Promise<Ticket> {
     const ticket: Ticket = await this.findOne(id);
     ticket.status = status;
     return await this.ticketRepository.save(ticket);
   }
 
-  findRecivingByAndAgent(agentId:number):Promise<Ticket[]>{
-    return this.ticketRepository.find({where:{status: TicketStatus.RECEIVE, agent: {id: agentId}  }});
+  findRecivingByAndAgent(agentId: number): Promise<Ticket[]> {
+    return this.ticketRepository.find({
+      where: { status: TicketStatus.RECEIVE, agent: { id: agentId } },
+    });
+  }
+
+  async printFile(ticket_order_number: number) {
+    const data = { order_nber: ticket_order_number };
+    var html = this.compiledTemplate(data);
+
+    var pdfPath = path.join('public/files', 'ticket.pdf');
+    var imagePath = path.join('public/files', 'ticket.jpeg');
+
+    var pdfOptions = {
+      width: '220px',
+      height: '270px',
+      scale: 1.6,
+      displayHeaderFooter: false,
+      margin: {
+        bottom: 0,
+        top: 0,
+      },
+      printBackground: true,
+      path: pdfPath,
+    };
+
+    var screenshotOptions = {
+      quality: 80,
+      fullPage: false,
+      clip: {
+        x: 250,
+        y: 45,
+        width: 300,
+        height: 180,
+      },
+      path: imagePath,
+      omitBackground: true,
+    };
+
+    const browser = await puppeteer.launch({
+      args: ['--no-sandbox'],
+      headless: true,
+    });
+
+    var page = await browser.newPage();
+
+    await page.goto(`data:text/html;charset=UTF-8,${html}`, {
+      waitUntil: 'networkidle0',
+    });
+    await page.pdf(pdfOptions);
+    await page.screenshot({ ...screenshotOptions, type: 'jpeg' });
+    await browser.close();
+    var info = fs.readFileSync(imagePath);
+    return { someData: 'someData' };
+    printDirect({
+      data: info,
+      type: 'JPEG',
+      success: function (jobID) {
+        console.log('ID: ' + jobID);
+      },
+      error: function (error) {
+        console.log('printer module error: ' + error);
+        throw error;
+      },
+    });
   }
 }

@@ -7,6 +7,7 @@ import { Ticket } from "src/entities/ticket.entity";
 import { TicketStatus } from "src/enums/ticket-status";
 import { Public } from "src/utils/public-decore";
 import { TicketService } from './../services/ticket.service';
+import { TicketGateway } from '../getways/ticket.getway';
 
 
 
@@ -15,11 +16,12 @@ import { TicketService } from './../services/ticket.service';
 export class TikectController {
   constructor(
     private readonly ticketService: TicketService,
+    private readonly ticketGateway: TicketGateway
   ) {}
 
   @Get("create")
-   createOne(): Promise<Ticket> {
-    return  this.ticketService.create();
+  createOne(): Promise<Ticket> {
+    return this.ticketService.create();
   }
 
   @Public()
