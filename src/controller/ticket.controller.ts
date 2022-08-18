@@ -19,6 +19,7 @@ export class TikectController {
     private readonly ticketGateway: TicketGateway
   ) {}
 
+  @Public()
   @Get("create")
   async create(): Promise<Ticket> {
     const ticket: Ticket = await this.ticketService.create();
