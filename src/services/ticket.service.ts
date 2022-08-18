@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { MoreThanOrEqual, Repository } from 'typeorm';
@@ -11,9 +10,9 @@ import { ConstanteService } from './constante.service';
 import { BadRequestException } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
-import { printDirect } from 'printer';
 import handlebars from 'handlebars';
 import * as puppeteer from 'puppeteer';
+import { TicketGateway } from 'src/getways/ticket.getway';
 
 export class TicketService {
   constructor(
@@ -32,7 +31,7 @@ export class TicketService {
     const ticket: Ticket = new Ticket();
     ticket.order_nber = await this.constanteService.getOrder();
     const savedTicket = await this.ticketRepository.save(ticket);
-    this.printFile(savedTicket.order_nber);
+    // this.printFile(savedTicket.order_nber);
     return savedTicket;
   }
   findAll(): Promise<Ticket[]> {
@@ -170,12 +169,12 @@ export class TicketService {
 
   async printFile(ticket_order_number: number) {
     const data = { order_nber: ticket_order_number };
-    var html = this.compiledTemplate(data);
+    const html = this.compiledTemplate(data);
 
-    var pdfPath = path.join('public/files', 'ticket.pdf');
-    var imagePath = path.join('public/files', 'ticket.jpeg');
+    const pdfPath = path.join('public/files', 'ticket.pdf');
+    const imagePath = path.join('public/files', 'ticket.jpeg');
 
-    var pdfOptions = {
+    const pdfOptions = {
       width: '220px',
       height: '270px',
       scale: 1.6,
@@ -188,7 +187,7 @@ export class TicketService {
       path: pdfPath,
     };
 
-    var screenshotOptions = {
+    const screenshotOptions = {
       quality: 80,
       fullPage: false,
       clip: {
@@ -206,7 +205,7 @@ export class TicketService {
       headless: true,
     });
 
-    var page = await browser.newPage();
+    const page = await browser.newPage();
 
     await page.goto(`data:text/html;charset=UTF-8,${html}`, {
       waitUntil: 'networkidle0',
@@ -214,18 +213,18 @@ export class TicketService {
     await page.pdf(pdfOptions);
     await page.screenshot({ ...screenshotOptions, type: 'jpeg' });
     await browser.close();
-    var info = fs.readFileSync(imagePath);
+    const info = fs.readFileSync(imagePath);
     return { someData: 'someData' };
-    printDirect({
-      data: info,
-      type: 'JPEG',
-      success: function (jobID) {
-        console.log('ID: ' + jobID);
-      },
-      error: function (error) {
-        console.log('printer module error: ' + error);
-        throw error;
-      },
-    });
+    // printDirect({
+    //   data: info,
+    //   type: 'JPEG',
+    //   success: function (jobID) {
+    //     console.log('ID: ' + jobID);
+    //   },
+    //   error: function (error) {
+    //     console.log('printer module error: ' + error);
+    //     throw error;
+    //   },
+    // });
   }
 }

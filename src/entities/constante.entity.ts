@@ -14,8 +14,11 @@ export class Constante extends Audit {
   @Index({ unique: true, where: "status IS TRUE" })
   name: string;
 
-  @Column({ nullable: false})
+  @Column({ nullable: true})
   value: string;
+
+  @Column({ nullable: true})
+  groupe: string;
 
   @Column({default: ConstanteVisibility.PUBLIC})
   visibilite?:ConstanteVisibility;

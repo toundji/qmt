@@ -47,12 +47,12 @@ export class User extends Audit{
   @Column({nullable:true})
   profile_image?: string;
 
-  @Column("simple-array",{default: [RoleName.AGENT]})
-    // @Column({
-    //   type: "enum",
-    //   enum: RoleName,
-    //   default: [RoleName.AGENT]
-    // })
+  // @Column("simple-array",{default: [RoleName.AGENT]})
+    @Column({
+      type: "enum",
+      enum: RoleName,
+      default: [RoleName.AGENT]
+    })
    roles?: RoleName[];
 
   // @ManyToOne((type) => Office, {eager:true})
