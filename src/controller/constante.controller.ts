@@ -46,7 +46,7 @@ export class ConstanteController {
   @Public()
   @Get('order')
    getOrder(): Promise<number> {
-    return  this.constanteService.getOrder();
+    return  this.constanteService.getNextOrder();
   }
 
   @Get('order/reset')

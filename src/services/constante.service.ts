@@ -5,12 +5,18 @@ import { Constante } from '../entities/constante.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { ConstanteDto } from 'src/dto/constante-search.dto';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class ConstanteService {
   constructor(  @InjectRepository(Constante)  private constanteRepository: Repository<Constante>){}
   create(createConstanteDto: ConstanteDto) {
     return this.constanteRepository.save(createConstanteDto);
+  }
+
+  @Cron('0 0 0 * * *')
+  autoResetOrder(){
+    this.resetOrder();
   }
 
   createAll(createConstanteDto: ConstanteDto[]) {
@@ -35,6 +41,12 @@ export class ConstanteService {
     const value = +order.value+1;
     order.value = value+"";
     await Constante.save(order);
+    return value;
+  }
+
+  async getNextOrder():Promise<number> {
+    const order:Constante = await this.findOrder();
+    const value = +order.value+1;
     return value;
   }
 

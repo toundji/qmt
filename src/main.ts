@@ -1,6 +1,4 @@
 /* eslint-disable prettier/prettier */
-import { ValidationPipe, BadRequestException } from '@nestjs/common';
-import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationError } from 'class-validator';
 import { writeFileSync } from 'fs';
@@ -10,6 +8,8 @@ import { JwtAuthGuard } from './utils/jwt-auth.guard';
 import * as bodyParser from 'body-parser';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import { NestFactory, Reflector } from '@nestjs/core';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
