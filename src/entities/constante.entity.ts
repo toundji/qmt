@@ -20,6 +20,9 @@ export class Constante extends Audit {
   @Column({ nullable: true})
   groupe: string;
 
+  @Column({ nullable: true})
+  reset_at?: Date;
+
   @Column({default: ConstanteVisibility.PUBLIC})
   visibilite?:ConstanteVisibility;
 

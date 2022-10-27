@@ -38,15 +38,29 @@ export class ConstanteService {
   }
 
   async getOrder():Promise<number> {
-    const order:Constante = await this.findOrder();
+    const order:Constante = await this.dateResetOrder();
     const value = +order.value+1;
     order.value = value+"";
     await Constante.save(order);
     return value;
   }
 
-  async getNextOrder():Promise<number> {
+  async dateResetOrder():Promise<Constante>{
     const order:Constante = await this.findOrder();
+    const now = new Date();
+    const today =new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0,0);
+    if(order.reset_at == null || order.reset_at != today){
+      order.value = "0";
+      order.reset_at = today;
+      return   await Constante.save(order);
+    }
+    else{
+      return order;
+    }
+  }
+
+  async getNextOrder():Promise<number> {
+    const order:Constante = await this.dateResetOrder();
     const value = +order.value+1;
     return value;
   }
@@ -101,6 +115,8 @@ export class ConstanteService {
 
   async init():Promise<Constante[]>{
     let constantes: Constante[] = await this.findAll();
+    const now= new Date();
+
     if(!constantes || constantes.length == 0){
       const list=[
         {
@@ -111,7 +127,8 @@ export class ConstanteService {
           value:"client@ecobanque.com"
         },{
           name: "ORDER",
-          value:"1"
+          value:"1",
+          reset_at: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0,0),
         },{
           name: "GLOBAL ORDER",
           value:"1"
