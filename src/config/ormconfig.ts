@@ -13,8 +13,8 @@ const ormConfig: TypeOrmOptionsFactory | any = {
     database: process.env.DATABASE_NAME,
     entities: ["dist/**/*.entity{.ts,.js}"],
 
-    url: process.env.DB_URL,
-    ssl: { rejectUnauthorized: false },
+    // url: process.env.DB_URL,
+    // ssl: { rejectUnauthorized: false },
 
     synchronize: true,
 

@@ -16,6 +16,7 @@ export class ConstanteService {
 
   @Cron('0 0 0 * * *')
   autoResetOrder(){
+    console.log("Ordre de ticket réinitialisé. Date : " +new Date());
     this.resetOrder();
   }
 
