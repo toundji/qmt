@@ -50,6 +50,8 @@ export class ConstanteService {
     const now = new Date();
     const today =new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0,0);
     if(order.reset_at == null || order.reset_at != today){
+      console.log(order.reset_at, today )
+      console.log("condition is true");
       order.value = "0";
       order.reset_at = today;
       return   await Constante.save(order);
