@@ -19,6 +19,7 @@ export class TicketService {
     @InjectRepository(Ticket) private ticketRepository: Repository<Ticket>,
     private readonly userService: UserService,
     private readonly constanteService: ConstanteService,
+    private readonly ticketGateway: TicketGateway
   ) {
     this.templateHtml = fs.readFileSync('public/files/ticket.html', 'utf8');
     this.compiledTemplate = handlebars.compile(this.templateHtml);
@@ -113,6 +114,7 @@ export class TicketService {
         old.finish_date = new Date();
         old.status = TicketStatus.FINISH;
         await this.ticketRepository.save(old);
+        this.ticketGateway.emitReceive()
       }
     }
     const nevel = await this.findOne(body.id);
