@@ -49,7 +49,7 @@ export class ConstanteService {
     const order:Constante = await this.findOrder();
     const now = new Date();
     const today =new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0,0);
-    if(order.reset_at == null || order.reset_at != today){
+    if(order.reset_at == null || order.reset_at.toDateString() != today.toDateString()){
       console.log(order.reset_at, today )
       console.log("condition is true");
       order.value = "0";

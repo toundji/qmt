@@ -258,10 +258,9 @@ export class UserService {
 
   async initOneAdmin() {
     let user: User;
-    try {
-      user = await this.findOneByPseudo("+22994851785");
-    } catch (e) {}
-    if (user) return;
+   
+    user = await this.findOneByPseudo("+22994851785").catch(error=> null);
+    if (user) return user;
     user = new User();
   
     user.roles = [RoleName.ADMIN];
@@ -273,6 +272,7 @@ export class UserService {
     user.phone = "+22994851785";
     user.birth_date = new Date();
     const u: User =  await this.userRepository.save(user);
+    console.log("Ok hier");
     
     return u;
   }
