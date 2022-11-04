@@ -1,24 +1,27 @@
 /* eslint-disable prettier/prettier */
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
-import { MoreThanOrEqual, Repository } from 'typeorm';
+import { Between, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { Ticket } from './../entities/ticket.entity';
 import { TicketStatus } from 'src/enums/ticket-status';
 import { ReceiveDto } from 'src/dto/receive-ticket.dto';
 import { UserService } from './user.service';
 import { ConstanteService } from './constante.service';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 import handlebars from 'handlebars';
 import * as puppeteer from 'puppeteer';
 import { TicketGateway } from 'src/getways/ticket.getway';
+import { TicketSearch } from 'src/dto/ticket.search';
+import { ApiDate } from './../utils/api-date';
 
 export class TicketService {
   constructor(
     @InjectRepository(Ticket) private ticketRepository: Repository<Ticket>,
     private readonly userService: UserService,
     private readonly constanteService: ConstanteService,
+    @Inject(forwardRef(() => TicketGateway))
     private readonly ticketGateway: TicketGateway
   ) {
     this.templateHtml = fs.readFileSync('public/files/ticket.html', 'utf8');
@@ -116,6 +119,14 @@ export class TicketService {
         await this.ticketRepository.save(old);
         this.ticketGateway.emitReceive()
       }
+    }else{
+      const old: Ticket = await this.lastReceiveOfAgent(body.agent_id).catch(error=>{return null;});
+      if (old!=null) {
+        old.finish_date = new Date();
+        old.status = TicketStatus.FINISH;
+        await this.ticketRepository.save(old);
+        this.ticketGateway.emitReceive()
+      }
     }
     const nevel = await this.findOne(body.id);
 
@@ -127,7 +138,7 @@ export class TicketService {
 
     await this.ticketRepository.save(nevel).catch((error) => {
       console.log(error);
-      throw new BadRequestException("Une erreur s'est produit");
+      throw new BadRequestException("Une erreur s'est produite");
     });
 
     return nevel;
@@ -166,6 +177,18 @@ export class TicketService {
   findRecivingByAndAgent(agentId: number): Promise<Ticket[]> {
     return this.ticketRepository.find({
       where: { status: TicketStatus.RECEIVE, agent: { id: agentId } },
+    });
+  }
+
+  lastTicketofAgent(agentId: number): Promise<Ticket> {
+    return this.ticketRepository.findOneOrFail({
+      where: {agent: { id: agentId }}, order:{receive_date: "DESC"}, 
+    });
+  }
+
+  lastReceiveOfAgent(agentId: number): Promise<Ticket> {
+    return this.ticketRepository.findOneOrFail({
+      where: { status: TicketStatus.RECEIVE, agent: { id: agentId }},order:{receive_date: "DESC"}, 
     });
   }
 
@@ -228,5 +251,36 @@ export class TicketService {
     //     throw error;
     //   },
     // });
+  }
+
+  search(search:TicketSearch):Promise<Ticket[]>{
+    let { from, to, precis, ...body} = search;
+    if(from && to){
+      return this.ticketRepository.find({where:{...body, created_at: Between(from, to)}}).catch((error)=>{
+        console.log(error);
+        throw new BadRequestException("Une erreur s'est produite pendant la recherche")
+      });
+    }else if(from){
+      if(!precis){
+        from = ApiDate.atMorning(from)
+      }
+      return this.ticketRepository.find({where:{...body, created_at: MoreThanOrEqual(from)}}).catch((error)=>{
+        console.log(error);
+        throw new BadRequestException("Une erreur s'est produite pendant la recherche")
+      });
+    }else if(to){
+      if(!precis){
+        to = ApiDate.atMorning(to)
+      }
+      return this.ticketRepository.find({where:{...body, created_at: LessThanOrEqual(to)}}).catch((error)=>{
+        console.log(error);
+        throw new BadRequestException("Une erreur s'est produite pendant la recherche")
+      });
+    }else {
+      return this.ticketRepository.find({where:body}).catch((error)=>{
+        console.log(error);
+        throw new BadRequestException("Une erreur s'est produite pendant la recherche")
+      });
+    }
   }
 }

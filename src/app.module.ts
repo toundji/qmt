@@ -21,7 +21,6 @@ import { JwtStrategy } from './services/jwt.strategy';
 import { OfficeService } from './services/office.service';
 import { TicketService } from './services/ticket.service';
 import { UserService } from './services/user.service';
-import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -41,7 +40,6 @@ import { ScheduleModule } from '@nestjs/schedule';
     JwtModule.register({
       secret: process.env.JWT_SECRET,
     }),
-    ScheduleModule.forRoot()
     
   ],
   controllers: [AppController, UserController, TikectController, ConstanteController, OfficeController],

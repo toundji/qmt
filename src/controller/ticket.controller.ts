@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 
-import { Body, Controller, Get, Param, Put } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { TicketDto } from "src/dto/ticket.dto";
 import { Ticket } from "src/entities/ticket.entity";
@@ -8,6 +8,7 @@ import { TicketStatus } from "src/enums/ticket-status";
 import { Public } from "src/utils/public-decore";
 import { TicketService } from './../services/ticket.service';
 import { TicketGateway } from '../getways/ticket.getway';
+import { TicketSearch } from './../dto/ticket.search';
 
 
 
@@ -69,5 +70,21 @@ export class TikectController {
   geticketByStatus(@Param('status') status:TicketStatus): Promise<Ticket[]> {
    return this.ticketService.findByStatus(status);
   }
+
+  
+  @Get("agent/:agent")
+  getByAgent( @Param('agent') id:number): Promise<Ticket[]> {
+   return this.ticketService.findRecivingByAndAgent(id);
+  }
+
+
+  @Post("search")
+  search(@Body() body:TicketSearch): Promise<Ticket[]> {
+   return this.ticketService.search(body);
+  }
+
+
+
+
 
 }

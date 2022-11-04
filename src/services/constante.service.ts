@@ -5,7 +5,6 @@ import { Constante } from '../entities/constante.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { ConstanteDto } from 'src/dto/constante-search.dto';
-import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class ConstanteService {
@@ -14,16 +13,11 @@ export class ConstanteService {
     return this.constanteRepository.save(createConstanteDto);
   }
 
-  @Cron('0 0 0 * * *')
-  autoResetOrder(){
-    console.log("Ordre de ticket réinitialisé. Date : " +new Date());
-    this.resetOrder();
-  }
 
   createAll(createConstanteDto: ConstanteDto[]) {
-      return this.constanteRepository.save(createConstanteDto).catch((error)=>{  console.log(error);
-        throw new BadRequestException("Les données que nous avons réçues ne sont celles que  nous espérons");
-      });
+    return this.constanteRepository.save(createConstanteDto).catch((error)=>{  console.log(error);
+      throw new BadRequestException("Les données que nous avons réçues ne sont celles que  nous espérons");
+    });
   }
 
   findAll() {
@@ -80,6 +74,8 @@ export class ConstanteService {
       throw new NotFoundException("Le constante spécifié n'existe pas");
     });
   }
+
+  
 
   searchFirst(search:ConstanteDto):Promise<Constante>{
     return this.constanteRepository.find({where:search}).then((list)=>{

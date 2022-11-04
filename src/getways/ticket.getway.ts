@@ -11,7 +11,7 @@ import { TicketService } from './../services/ticket.service';
 import { Ticket } from './../entities/ticket.entity';
 import { ReceiveDto } from 'src/dto/receive-ticket.dto';
 import { TicketStatus } from 'src/enums/ticket-status';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject } from '@nestjs/common';
 import { ConstanteService } from 'src/services/constante.service';
 import { Constante } from 'src/entities/constante.entity';
 
@@ -25,6 +25,7 @@ export class TicketGateway {
   @WebSocketServer()
   server: Server;
   constructor(
+    @Inject(forwardRef(() => TicketService))
     private readonly ticketService: TicketService,
     private readonly constanteService: ConstanteService
   ) {}
