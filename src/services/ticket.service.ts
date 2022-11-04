@@ -92,6 +92,21 @@ export class TicketService {
     });
   }
 
+  findOfDay(): Promise<Ticket[]> {
+    const now: Date = new Date();
+    const beginDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      0,
+      0,
+      0,
+    );
+    return this.ticketRepository.find({
+      where: {created_at: MoreThanOrEqual(beginDay) },
+    });
+  }
+
   findCancelOfDay(): Promise<Ticket[]> {
     const now: Date = new Date();
     const beginDay = new Date(
@@ -256,6 +271,10 @@ export class TicketService {
   search(search:TicketSearch):Promise<Ticket[]>{
     let { from, to, precis, ...body} = search;
     if(from && to){
+      if(!precis){
+        from = ApiDate.atMorning(from)
+        to = ApiDate.atMorning(to)
+      }
       return this.ticketRepository.find({where:{...body, created_at: Between(from, to)}}).catch((error)=>{
         console.log(error);
         throw new BadRequestException("Une erreur s'est produite pendant la recherche")

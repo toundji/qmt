@@ -82,9 +82,4 @@ export class TikectController {
   search(@Body() body:TicketSearch): Promise<Ticket[]> {
    return this.ticketService.search(body);
   }
-
-
-
-
-
 }

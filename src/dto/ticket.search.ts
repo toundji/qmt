@@ -42,11 +42,11 @@ export class TicketSearch {
     @IsOptional()
     agent:IdDto;
   
-    @ApiProperty()
-    @IsObject()
-    @Type(type=>IdDto)
-    @IsOptional()
-    office:IdDto;
+    // @ApiProperty()
+    // @IsObject()
+    // @Type(type=>IdDto)
+    // @IsOptional()
+    // office:IdDto;
 
     @ApiProperty()
     @IsDateString()

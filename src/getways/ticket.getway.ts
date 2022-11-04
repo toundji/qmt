@@ -106,6 +106,7 @@ export class TicketGateway {
     await this.emitReceive();
     await this.emitCancel();
     await this.emitFinish();
+    await this.emitAllTickeOfDay();
   }
 
   async emitWaiter(){
@@ -125,6 +126,11 @@ export class TicketGateway {
   async emitCancel(){
     const receivers: Ticket[] = await this.ticketService.findByStatusOfDay(TicketStatus.CANCEL);
     this.server.emit(`cancel-list`, receivers);
+  }
+
+  async emitAllTickeOfDay(){
+    const receivers: Ticket[] = await this.ticketService.findOfDay();
+    this.server.emit(`all-list`, receivers);
   }
 
 
