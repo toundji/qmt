@@ -31,11 +31,11 @@ export class Ticket extends Audit {
   code?: string;
 
   @ManyToOne((type) => User, {eager:true})
-  @JoinColumn({ name: 'user_id'})
+  @JoinColumn({ name: 'id_user'})
   agent:User;
 
   @ManyToOne((type) => Office, {eager:true})
-  @JoinColumn({ name: 'office_id'})
+  @JoinColumn({ name: 'id_office'})
   office:Office;
 
   @BeforeInsert()  async hashPassword() {
