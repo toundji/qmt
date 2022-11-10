@@ -14,8 +14,8 @@ const ormConfig: TypeOrmOptionsFactory | any = {
     entities: ["dist/**/*.entity{.ts,.js}"],
     
 
-    // url: process.env.DB_URL,
-    // ssl: { rejectUnauthorized: false },
+    url: process.env.DB_URL,
+    ssl: { rejectUnauthorized: false },
 
     synchronize: true,
 
