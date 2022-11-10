@@ -60,15 +60,7 @@ export class TicketService {
   }
 
   findWaiterOfDays(): Promise<Ticket[]> {
-    const now: Date = new Date();
-    const beginDay = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-      0,
-      0,
-      0,
-    );
+    const beginDay = ApiDate.atMorning();
     return this.ticketRepository.find({
       where: {
         status: TicketStatus.WAITING,
@@ -78,45 +70,21 @@ export class TicketService {
   }
 
   findByStatusOfDay(status: TicketStatus): Promise<Ticket[]> {
-    const now: Date = new Date();
-    const beginDay = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-      0,
-      0,
-      0,
-    );
+    const beginDay = ApiDate.atMorning();
     return this.ticketRepository.find({
       where: { status: status, created_at: MoreThanOrEqual(beginDay) },
     });
   }
 
   findOfDay(): Promise<Ticket[]> {
-    const now: Date = new Date();
-    const beginDay = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-      0,
-      0,
-      0,
-    );
+    const beginDay = ApiDate.atMorning();
     return this.ticketRepository.find({
       where: {created_at: MoreThanOrEqual(beginDay) },
     });
   }
 
   findCancelOfDay(): Promise<Ticket[]> {
-    const now: Date = new Date();
-    const beginDay = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-      0,
-      0,
-      0,
-    );
+    const beginDay = ApiDate.atMorning();
     return this.ticketRepository.find({
       where: {
         status: TicketStatus.WAITING,

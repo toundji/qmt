@@ -9,7 +9,6 @@ import { ApiProperty } from '@nestjs/swagger';
 export class TicketSearch {
   
     @ApiProperty()
-    @IsEnum({ type: TicketStatus })
     @IsOptional()
     status?:TicketStatus;
 
@@ -60,6 +59,7 @@ export class TicketSearch {
 
     @ApiProperty()
     @IsBoolean()
+    @IsOptional()
     precis:boolean;
 
 }
