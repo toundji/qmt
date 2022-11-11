@@ -31,6 +31,16 @@ export class TikectController {
   }
 
   @Public()
+  @Get("create/operation/information")
+  async createInformation(): Promise<Ticket> {
+    const ticket: Ticket = await this.ticketService.create();
+    this.ticketGateway.server.emit(`onCreate`, ticket);
+    this.ticketGateway.emitAll();
+    this.ticketGateway.server.emit(`last-order`, +ticket.order_nber );
+    return ticket;
+  }
+
+  @Public()
   @Get()
    getTickets(): Promise<Ticket[]> {
     return this.ticketService.findAll();

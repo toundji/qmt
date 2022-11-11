@@ -6,6 +6,7 @@ import { Audit } from './audit';
 import { Office } from './office.entity';
 import { User } from './user.entity';
 import { ManyToOne } from 'typeorm';
+import { TypeOperation } from 'src/enums/type-operation';
 
 @Entity("tickets")
 export class Ticket extends Audit {
@@ -16,6 +17,9 @@ export class Ticket extends Audit {
 
   @Column({default: TicketStatus.WAITING})
   status?:TicketStatus;
+
+  @Column({default: TypeOperation.OPERATION})
+  type?: TypeOperation;
 
   @Column({nullable:true})
   receive_date: Date;

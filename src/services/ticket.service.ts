@@ -15,6 +15,7 @@ import * as puppeteer from 'puppeteer';
 import { TicketGateway } from 'src/getways/ticket.getway';
 import { TicketSearch } from 'src/dto/ticket.search';
 import { ApiDate } from './../utils/api-date';
+import { TypeOperation } from 'src/enums/type-operation';
 
 export class TicketService {
   constructor(
@@ -33,6 +34,14 @@ export class TicketService {
 
   async create(): Promise<Ticket> {
     const ticket: Ticket = new Ticket();
+    ticket.order_nber = await this.constanteService.getOrder();
+    const savedTicket = await this.ticketRepository.save(ticket);
+    // this.printFile(savedTicket.order_nber);
+    return savedTicket;
+  }
+
+  async createInformation(): Promise<Ticket> {
+    const ticket: Ticket =  Ticket.create({type: TypeOperation.INFORMATION});
     ticket.order_nber = await this.constanteService.getOrder();
     const savedTicket = await this.ticketRepository.save(ticket);
     // this.printFile(savedTicket.order_nber);
