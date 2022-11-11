@@ -73,9 +73,9 @@ export class UserController {
   
 
   @Put(':id')
-  async update(@Body() body:UpdateUserDto, @Req() request): Promise<User> {
-    const user: User = request['user'];
-    return this.userservice.update(user.id, body);
+  async update( @Param('id') id: number,
+    @Body() body:UpdateUserDto, @Req() request): Promise<User> {
+    return this.userservice.update(id, body);
   }
 
   @Put('change/password')

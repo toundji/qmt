@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 export enum TypeOperation {
-    DEPOT = 'DEPOT',
+    DEPOT = 'DÉPÔT',
     RETRAIT = 'RETRAIT',
-    OPERATION = "OPERATION CAISSE",
+    OPERATION = "OPÉRATION CAISSE",
     INFORMATION = 'DEMANDE D\'INFORMATION'
   }
   
