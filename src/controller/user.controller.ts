@@ -21,11 +21,8 @@ import { LoginRespo } from '../dto/login-respo.dto';
 import { ChangePasswordDto } from 'src/dto/change-password.dto';
 import { ChangeEmailDto } from 'src/dto/change-emeail.dto';
 import { UpdateUserDto } from 'src/dto/update-user.dto';
-import { RoleName } from 'src/enums/role-name';
-import { RoleGuard } from 'src/utils/role.guard';
-import { Roles } from 'src/utils/role.decorator';
 import { BadRequestException } from '@nestjs/common';
-import { InternalServerErrorException } from '@nestjs/common';
+import { RoleGuard } from 'src/utils/role.guard';
 
 @ApiTags('Users')
 @Controller('users')
@@ -40,6 +37,7 @@ export class UserController {
     return this.userservice.create(body);
   }
 
+  @Public()
   @Get()
   async getUsers(): Promise<User[]> {
     const users = await this.userservice.findAll();
@@ -93,34 +91,6 @@ export class UserController {
     const user: User = request.user;
     return this.userservice.changeEmail(body, user);
   }
-
-//   @Post('profile/image')
-//   @UseInterceptors(
-//     FileInterceptor('profile', {
-//       storage: diskStorage({
-//         destination: './files/profiles',
-//         filename: editFileName,
-//       }),
-//       fileFilter: imageFileFilter,
-//     }),
-//   )
-//   @ApiConsumes('multipart/form-data')
-//   @ApiBody({
-//     schema: {
-//       type: 'object',
-//       properties: {
-//         profile: {
-//           type: 'string',
-//           format: 'binary',
-//         },
-//       },
-//     },
-//   })
-//   updateProfile(@UploadedFile() profile, @Req() req): Promise<User> {
-//     const user = req['user'];
-//     return this.userservice.updateProfile(user.id, profile, user);
-//   }
-
   @Get('profile')
   async getProfile(@Req() req) {
     const user: User = req['user'];
