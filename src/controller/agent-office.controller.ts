@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AgentOfficeDto } from 'src/dto/agent-service.dto';
 import { AgentOffice } from 'src/entities/office-agent.entity';
@@ -29,6 +29,12 @@ export class OfficeAgentController {
   @Get(":id")
   changeOfficier(@Param('id') id:number): Promise<AgentOffice> {
    return this.agentOfficeService.changeAgent(id);
+  }
+
+  
+  @Delete(':id')
+  solfDelete(@Param('id') id: number) {
+    return  this.agentOfficeService.softRemove(id);
   }
 
 }

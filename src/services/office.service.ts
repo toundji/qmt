@@ -63,6 +63,14 @@ export class OfficeService {
     });
   }
 
+  async softRemove(id: number) : Promise<Office>  {
+    await  this.officeRepository.softDelete(id).catch((error)=>{
+      console.log(error);
+      throw new NotFoundException("L'utilisateur spécifier n'existe pas")
+    });
+    return await this.findOne(id);
+  }
+
   async init():Promise<Office[]>{
     let offices: Office[] = await this.findAll();
     if(!offices || offices.length == 0){

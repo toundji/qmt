@@ -7,7 +7,7 @@ import { TicketStatus } from 'src/enums/ticket-status';
 import { ReceiveDto } from 'src/dto/receive-ticket.dto';
 import { UserService } from './user.service';
 import { ConstanteService } from './constante.service';
-import { BadRequestException, forwardRef, Inject } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, NotFoundException } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 import handlebars from 'handlebars';
@@ -182,6 +182,14 @@ export class TicketService {
     return this.ticketRepository.findOneOrFail({
       where: { status: TicketStatus.RECEIVE, agent: { id: agentId }},order:{receive_date: "DESC"}, 
     });
+  }
+
+  async softRemove(id: number) : Promise<Ticket>  {
+    await  this.ticketRepository.softDelete(id).catch((error)=>{
+      console.log(error);
+      throw new NotFoundException("L'utilisateur spécifier n'existe pas")
+    });
+    return await this.findOne(id);
   }
 
   async printFile(ticket_order_number: number) {

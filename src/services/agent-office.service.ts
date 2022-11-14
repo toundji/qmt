@@ -121,5 +121,13 @@ export class AgentOfficeService {
       );
     });
   }
+
+  async softRemove(id: number) : Promise<AgentOffice>  {
+    await  this.agentOfficeRepository.softDelete(id).catch((error)=>{
+      console.log(error);
+      throw new NotFoundException("L'utilisateur spécifier n'existe pas")
+    });
+    return await this.findOne(id);
+  }
 }
 

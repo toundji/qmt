@@ -111,6 +111,14 @@ export class ConstanteService {
     });
   }
 
+  async softRemove(id: number) : Promise<Constante>  {
+    await  this.constanteRepository.softDelete(id).catch((error)=>{
+      console.log(error);
+      throw new NotFoundException("L'utilisateur spécifier n'existe pas")
+    });
+    return await this.findOne(id);
+  }
+
   async init():Promise<Constante[]>{
     let constantes: Constante[] = await this.findAll();
     const now= new Date();

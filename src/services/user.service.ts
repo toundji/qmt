@@ -224,14 +224,11 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    
       await  this.userRepository.update(id, updateUserDto).catch((error)=>{
         console.log(error);
         throw new NotFoundException("L'utilisateur spécifier n'existe pas");      
       });
-
       return this.findOne(id);
-      
   }
 
    delete(id: number) {
@@ -255,6 +252,16 @@ export class UserService {
         throw new NotFoundException("L'utilisateur spécifier n'existe pas")
       });
   }
+
+
+  async softRemove(id: number) : Promise<User>  {
+    await  this.userRepository.softDelete(id).catch((error)=>{
+      console.log(error);
+      throw new NotFoundException("L'utilisateur spécifier n'existe pas")
+    });
+    return await this.findOne(id);
+  }
+
 
   async initOneAdmin() {
     let user: User;

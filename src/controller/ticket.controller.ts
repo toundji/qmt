@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 
-import { Body, Controller, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { TicketDto } from "src/dto/ticket.dto";
 import { Ticket } from "src/entities/ticket.entity";
@@ -60,6 +60,11 @@ export class TikectController {
  cancelTicketTicket(@Body() body: TicketDto): Promise<Ticket> {
   return this.ticketService.cancelOne(body);
   }
+
+  @Delete(':id')
+  solfDelete(@Param('id') id: number) {
+   return  this.ticketService.softRemove(id);
+ }
 
   @Put("rejet-one")
   rejetTicketTicket(@Body() body: TicketDto): Promise<Ticket> {

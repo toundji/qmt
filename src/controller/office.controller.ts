@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { OfficeDto } from 'src/dto/office.dto';
 import { Office } from 'src/entities/office.entity';
@@ -42,4 +42,10 @@ export class OfficeController {
  init():Promise<Office[]>{
     return  this.officeService.init();
  }
+
+ 
+ @Delete(':id')
+ solfDelete(@Param('id') id: number) {
+  return  this.officeService.softRemove(id);
+}
 }

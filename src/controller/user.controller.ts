@@ -133,6 +133,11 @@ export class UserController {
     return  this.userservice.delete(id);
   }
 
+  @Delete(':id')
+  solfDelete(@Param('id') id: number) {
+   return  this.userservice.softRemove(id);
+ }
+
     @Get("init")
     @Public()
     init():Promise<User>{

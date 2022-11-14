@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ConstanteDto } from 'src/dto/constante-search.dto';
 import { Constante } from 'src/entities/constante.entity';
@@ -58,4 +58,10 @@ export class ConstanteController {
  init():Promise<Constante[]>{
     return  this.constanteService.init();
  }
+
+ 
+ @Delete(':id')
+ solfDelete(@Param('id') id: number) {
+  return  this.constanteService.softRemove(id);
+}
 }
